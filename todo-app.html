@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+
+    <style>
+      .App {
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .note-input {
+        margin-bottom: 1rem;
+      }
+
+      .note-input input {
+        padding: 0.5rem;
+        font-size: 1.2rem;
+        margin-right: 1rem;
+      }
+
+      .note-input button {
+        background-color: #2ecc71;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .note-input button:hover {
+        background-color: #27ae60;
+      }
+
+      .note .note-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .note-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem;
+        background-color: #f5f5f5;
+        margin-bottom: 0.5rem;
+      }
+
+      .note-list li button {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+    </style>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useState } = React;
+
+      function MyApp() {
+        const [notes, setNotes] = useState([
+          {
+            id: 1,
+            text: "Hello",
+          },
+        ]);
+        const [inputNote, setInputNote] = useState("");
+
+        function handleInputChange(e) {
+          setInputNote(e.target.value);
+        }
+
+        function handleSubmit(e) {
+          e.preventDefault();
+
+          if (inputNote.trim() !== "") {
+            const newNote = {
+              id: new Date().getTime(),
+              text: inputNote,
+            };
+
+            setNotes([...notes, newNote]);
+            setInputNote("");
+          }
+        }
+
+        return (
+          <div className="App">
+            <h1>Notes</h1>
+
+            <form className="note-input" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                placeholder="Add a note"
+                value={inputNote}
+                onChange={handleInputChange}
+              />
+              <button>Add</button>
+            </form>
+
+            <ul className="note-list">
+              {notes.map((note) => (
+                <li key={note.id}>
+                  {note.text}
+                  <button onClick={() => handleInputChange(note.id)}>
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      const container = document.getElementById("root");
+      const root = ReactDOM.createRoot(container);
+      root.render(<MyApp />);
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      Read this page for starting a new React project with JSX:
+      https://react.dev/learn/start-a-new-react-project
+
+      Read this page for adding React with JSX to an existing project:
+      https://react.dev/learn/add-react-to-an-existing-project
+    -->
+  </body>
+</html>
