@@ -1,82 +1,54 @@
 import { useState } from "react";
-
-const listItems = [
-  { id: 1, title: "Read Manga", done: false },
-  { id: 2, title: "Watch Anime", done: true },
-];
+import Logo from "./components/Logo";
+import CheckList from "./components/CheckList";
+import Form from "./components/Form";
+import Stats from "./components/Stats";
 
 function App() {
-  return (
-    <div className="app">
-      <Logo />
-      <Form />
-      <CheckList />
-      <Stats />
-    </div>
-  );
-}
+  const [listItems, setListItems] = useState([]);
 
-function Logo() {
-  return (
-    <span className="logo">
-      ToDo<span style={{ color: "red" }}>keyo</span>
-    </span>
-  );
-}
+  function handleAddItem(item) {
+    setListItems((listItems) => [...listItems, item]);
+  }
 
-function Form() {
-  const [title, setTitle] = useState("");
+  function handleDeleteItem(id) {
+    setListItems((listItems) => listItems.filter((item) => item.id !== id));
+  }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  function handleToggleItem(id) {
+    setListItems((listItems) => {
+      return listItems.map((item) => {
+        if (item.id === id) {
+          return {
+            ...item,
+            done: !item.done,
+          };
+        }
+
+        return item;
+      });
+    });
+  }
+
+  function handleClearItems() {
+    const confirm = window.confirm("Are you sure you want to clear the list?");
+    if (confirm) {
+      setListItems([]);
+    }
   }
 
   return (
-    <form className="add-form" onSubmit={handleSubmit}>
-      <h3>Ada yang mau kamu catat? 🤔</h3>
-      <input
-        type="text"
-        name="title"
-        id=""
-        value={title}
-        onChange={(e) => {
-          setTitle(e.target.value);
-        }}
+    <div className="app">
+      <Logo />
+      <Form onAddItem={handleAddItem} />
+      <CheckList
+        items={listItems}
+        onDeleteItem={handleDeleteItem}
+        onToggleItem={handleToggleItem}
+        onClearItems={handleClearItems}
       />
-      <button>Add</button>
-    </form>
-  );
-}
-
-function CheckList() {
-  return (
-    <div className="list">
-      <ul>
-        {listItems.map((item) => (
-          <Item key={item.id} item={item} />
-        ))}
-      </ul>
+      <Stats items={listItems} />
     </div>
-  );
-}
-
-function Item({ item }) {
-  return (
-    <li key={item.id}>
-      <input type="checkbox" />
-      <span style={{ textDecoration: item.done ? "line-through" : "" }}>
-        {item.title}
-      </span>
-      <button>❌</button>
-    </li>
-  );
-}
-
-function Stats() {
-  return (
-    <footer className="stats">
-      <span>Total Tugas: X | Done: X</span>
-    </footer>
   );
 }
 
